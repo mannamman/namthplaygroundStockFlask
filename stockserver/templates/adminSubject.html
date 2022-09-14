@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <style>
+            button {
+                background-color: #04AA6D;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1><a href="https://www.namthplayground.com" style="text-decoration: none; color: black"><p style="text-align: center;">namthplayground</p></a></h1>
+        <h2><p style="text-align: center;">StockHelper Admin Subject Edit</p></h2>
+      </div>
+      <div class="signButtons" style="margin: auto;">
+            <button type="button" style="position: fixed; right: 100px;"><a href="https://www.namthplayground.com/stock/admin/subject" style="text-decoration: none; color: white">종목관리</a></button>
+        </div>
+        <div id="subject_container"></div>
+        <script>
+            const subjects = '{{subjects}}';
+            const subjectList = subjects.split(',');
+            console.log(subjects);
+            const container = document.getElementById('subject_container');
+            const ol = document.createElement('ol');
+            ol.setAttribute('style', 'padding: 0; margin: 0;');
+            ol.setAttribute('id', 'theList');
+            for(let i=0; i<subjectList.length; i++){
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="https://localhost/stock/admin/subject/${subjectList[i]}">${subjectList[i]}</a>`;
+                li.setAttribute('style', 'display: block;');
+                ol.appendChild(li);
+            }
+            container.appendChild(ol);
+        </script>
+    </body>
+</html>

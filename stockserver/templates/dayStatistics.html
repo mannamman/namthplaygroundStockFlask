@@ -1,0 +1,225 @@
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<head>
+  <!-- <link rel="stylesheet" type="text/css" href="../static/default.css"> -->
+</head>
+
+<body>
+  <div id="header">
+    <h1 align="center">
+      StockHelper
+    </h1>
+    <p align="center">
+      <a href="https://github.com/mannamman/newsCrawl/blob/main/LICENSE" target="_blank">
+        <img src="https://www.namthplayground.com/public/img/licensemit.svg" />
+      </a>
+    </p>
+  </div>
+  <a href="javascript:history.back()">뒤로 가기</a>
+  <div>
+    <h3>
+      <p>누적 의견 개수 통계</p>
+    </h3>
+    <p>의견 총합 개수 : "{{total_cnt}}"</p>
+    <p>긍정적 의견 개수 : "{{positive_cnt}}"</p>
+    <p>부정적 의견 개수 : "{{negative_cnt}}"</p>
+  </div>
+  <div id="doughnut" style="padding: 10px; flex-wrap: wrap;">
+    <canvas id="doughnutChart" width="600" height="250"></canvas>
+    <script>
+      const doughnutCtx = document.getElementById('doughnutChart');
+      const total_cnt = '{{total_cnt}}';
+      const positive_cnt = '{{positive_cnt}}';
+      const negative_cnt = '{{negative_cnt}}';
+      const subject = '{{subject}}';
+      const myChart = new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ["중립 의견 개수", "긍정적 의견 개수", "부정적 의견 개수"],
+          datasets: [{
+            label: subject,
+            data: [total_cnt - positive_cnt - negative_cnt, positive_cnt, negative_cnt],
+            backgroundColor: [
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+              'rgba(255, 206, 86, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 99, 132, 1)'
+            ],
+
+          }]
+        },
+        options: {
+          responsive: false,
+        }
+      });
+    </script>
+  </div>
+  <div id="linePred">
+    <h3>
+      <p>일일 의견 개수 그래프</p>
+    </h3>
+    <canvas id="lineChartPred" width="1920" height="550"></canvas>
+    <script>
+      const linePredCtx = document.getElementById('lineChartPred');
+      const day_statistics = "{{day_statistics}}".replace(/&quot;/g, '"')
+      const day_results = JSON.parse(day_statistics);
+      const neutral_cnt_list = [];
+      const positive_cnt_list = [];
+      const negative_cnt_list = [];
+      const createdAt_list = [];
+      for (var i = 0; i < day_results.length; i++) {
+        var temp_negative_cnt = day_results[i]["negativeCnt"]
+        var temp_positive_cnt = day_results[i]["positiveCnt"]
+        var temp_neutral_cnt = day_results[i]["totalCnt"] - temp_negative_cnt - temp_positive_cnt
+        negative_cnt_list.push(temp_negative_cnt)
+        positive_cnt_list.push(temp_positive_cnt)
+        neutral_cnt_list.push(temp_neutral_cnt)
+        createdAt_list.push(day_results[i]["createdAt"])
+      }
+      const negative_data = {
+        label: "부정적 의견 개수",
+        data: negative_cnt_list,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'rgba(249, 18, 83, 0.8)'
+      };
+
+      const positive_data = {
+        label: "긍정적 의견 개수",
+        data: positive_cnt_list,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'rgba(30, 181, 247, 0.8)'
+      };
+
+      const neutral_data = {
+        label: "중립 의견 개수",
+        data: neutral_cnt_list,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'rgba(237, 218, 37, 0.8)'
+      };
+
+      const createdAt_data = {
+        labels: createdAt_list,
+        datasets: [negative_data, positive_data, neutral_data]
+      };
+
+      const predChartOptions = {
+        responsive: false,
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            fontColor: 'black'
+          }
+        }
+      };
+
+      const lineChartPred = new Chart(linePredCtx, {
+        type: 'line',
+        data: createdAt_data,
+        options: predChartOptions
+      });
+    </script>
+    <div id="lineReal">
+      <h3>
+        <p>실제 가격 그래프</p>
+      </h3>
+      <h3>
+        <p>그래프가 비어있는 부분은 토요일,일요일 주식시장이 열리지 않았을 때</p>
+      </h3>
+      <canvas id="lineChartReal" width="1920" height="550"></canvas>
+      <script>
+        const lineRealCtx = document.getElementById('lineChartReal');
+        const closePrices = [{{ close_prices }}];
+        const closeDates = "{{close_dates}}".split(",");
+
+        const realStockPrices = {
+          label: "실제 가격",
+          data: closePrices,
+          lineTension: 0,
+          fill: false,
+          borderColor: 'rgba(237, 218, 37, 0.8)'
+        };
+
+        const realStockDatas = {
+          labels: closeDates,
+          datasets: [realStockPrices]
+        };
+
+        const realChartOptions = {
+          responsive: false,
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              fontColor: 'black'
+            }
+          }
+        };
+
+        const lineChartReal = new Chart(lineRealCtx, {
+          type: 'line',
+          data: realStockDatas,
+          options: realChartOptions
+        });
+      </script>
+    </div>
+  </div>
+  <div id='news_container'></div>
+  <script>
+    const makeBox = (res, index) => {
+      const createdAt = res.createdAt;
+      const subject = res.subject;
+      const sentiments = res.sentiment;
+      let container = `
+                    <div id=urlcard${index}>
+                        <details>
+                            <summary>${createdAt.slice(0, 10)}</summary>
+                    `;
+      for (const sentiment of sentiments) {
+        const liContext = `
+                    <ul style="margin-bottom: 1em;">
+                        <li style="font-weight: bold;">
+                            뉴스 링크 : <a href=${sentiment.url} target="_blank">${sentiment.sentence}</a>
+                        </li>
+                        <li style="color: #4089ff">긍정: ${Math.round(sentiment.positive * 100)}%</li>
+                        <li style="color: #d13426">부정: ${Math.round(sentiment.negative * 100)}%</li>
+                        <li style="color: #d126c0">중립: ${Math.round(sentiment.neutral * 100)}%</li>
+                    </ul>
+                    `
+        container += liContext;
+      }
+      container += '</details></div></div>';
+      return container;
+    }
+
+    const res = '{{result}}';
+    const regexRes = res.replace(/&quot;/g, '"');
+    const resJson = JSON.parse(regexRes);
+    const cont = document.getElementById('news_container');
+    const mainHeader = document.createElement('H1');
+    mainHeader.innerHTML = `${resJson[0].subject.toUpperCase()} News Links`;
+    cont.appendChild(mainHeader);
+    const ul = document.createElement('ul');
+    ul.setAttribute('style', 'padding: 0; margin: 0;');
+    ul.setAttribute('id', 'theList');
+
+    for (let i = 0; i < resJson.length; i++) {
+      const li = document.createElement('li');
+      const log = makeBox(resJson[i], i);
+      li.innerHTML = log;
+      li.setAttribute('style', 'display: block;');
+      ul.appendChild(li);
+    }
+    cont.appendChild(ul);
+  </script>
+</body>
+
+</html>

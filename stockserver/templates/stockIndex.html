@@ -1,0 +1,49 @@
+<html>
+    <body>
+      <div class="header">
+        <h1><a href="https://www.namthplayground.com" style="text-decoration: none; color: black"><p style="text-align: center;">namthplayground</p></a></h1>
+        <h2><p style="text-align: center;">StockHelper</p></h2>
+      </div>
+        <div class="repos">
+          <p>GitHub 주소</p>
+          <h2>
+            <a href="https://github.com/mannamman/newsCrawl" target="_blank">newsCrawlSentiment</a>
+            <br/>
+            <a href="https://github.com/mannamman/newsCrawl/blob/main/LICENSE" target="_blank">
+              <img src="https://www.namthplayground.com/public/img/licensemit.svg"/>
+            </a>
+          </h2>
+          <h2>
+            <a href="https://github.com/mannamman/namthplaygroundNest" target="_blank">newsCrawlWeb</a>
+            <br/>
+            <a href="https://github.com/mannamman/namthplaygroundNest/blob/main/LICENSE" target="_blank">
+              <img src="https://www.namthplayground.com/public/img/licensemit.svg"/>
+            </a>
+          </h2>
+        </div>
+        <!-- <form action="https://www.namthplayground.com/stock/day" method="post">-->
+        <form action="http://localhost:5958/stock/day" method="post">
+          <p>주제</p>
+          <select name="subject">
+            <option value="tesla">Tesla</option>
+            <option value="snp500">SNP500</option>
+            <option value="google">GOOGLE</option>
+            <option value="nasdaq">Nasdaq</option>
+            <option value="americanelectricpower">AmericanElectricPower</option>
+            <option value="oneok">Oneok</option>
+            <option value="amazon">Amazon</option>
+            <option value="apple">Apple</option>
+          </select><br>
+          <p>뉴스가 작성된 언어</p>
+          <select name="source_lang">
+            <option value="en">eng</option>
+          </select><br>
+          <div id="calendar">
+            <br>
+            <label for="start" style="display: block; font: 1rem">1달이내의 의견</label><br>
+            <input type="date" id="start" name="start" value="{{start_date}}" min="{{min_date}}" max="{{max_date}}" style="margin: .4rem 0;"/>
+          </div>
+          <input type="submit"/>
+        </form>
+    </body>
+</html>

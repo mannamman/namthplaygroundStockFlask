@@ -1,0 +1,55 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <div id='news_container'></div>
+        <script>
+            const makeBox = (res, index) => {
+                const createdAt = res.createdAt;
+                const subject = res.subject;
+                const sentiments = res.sentiment;
+                let container = `
+                    <div id=urlcard${index}>
+                        <details>
+                            <summary>${createdAt.slice(0,10)}</summary>
+                    `;
+                for(const sentiment of sentiments) {
+                    const liContext = `
+                    <ul style="margin-bottom: 1em;">
+                        <li style="font-weight: bold;">
+                            뉴스 링크 : <a href=${sentiment.url} target="_blank">${sentiment.sentence}</a>
+                        </li>
+                        <li style="color: #4089ff">긍정: ${Math.round(sentiment.positive * 100)}%</li>
+                        <li style="color: #d13426">부정: ${Math.round(sentiment.negative * 100)}%</li>
+                        <li style="color: #d126c0">중립: ${Math.round(sentiment.neutral * 100)}%</li>
+                    </ul>
+                    `
+                    container += liContext;
+                }
+                container += '</details></div></div>';
+                return container;
+            }
+
+            const res = '{{result}}';
+            const regexRes = res.replace(/&quot;/g,'"');
+            const resJson = JSON.parse(regexRes);
+            const cont = document.getElementById('news_container');
+            const mainHeader = document.createElement('H1');
+            mainHeader.innerHTML = resJson[0].subject;
+            cont.appendChild(mainHeader);
+            const ul = document.createElement('ul');
+            ul.setAttribute('style', 'padding: 0; margin: 0;');
+            ul.setAttribute('id', 'theList');
+
+            for(let i=0; i<resJson.length; i++) {
+                const li = document.createElement('li');
+                const log = makeBox(resJson[i], i);
+                li.innerHTML = log;
+                li.setAttribute('style', 'display: block;');
+                ul.appendChild(li);
+            }
+            cont.appendChild(ul);
+        </script>
+    </body>
+</html>
+
