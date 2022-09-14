@@ -4,8 +4,9 @@ import os
 import datetime
 from uuid import uuid4
 from typing import Dict, List, Tuple
-from bson.json_util import dumps, loads
+from bson.json_util import dumps
 from my_module.yfin_module import YFin
+import copy
 
 """
 RDBMS	    Mongo DB
@@ -99,9 +100,11 @@ class Mongo:
           "$and": [{ "createdAt": { "$gte": start } }, { "createdAt": { "$lte": end } }],
         }
         cursor = self.collection.find(query, {"uuid": 0})
+        res_cursor = copy.copy(cursor)
         range_dict, day_results = self._calc_day_static(cursor)
         close_prices, close_dates = self.yfin.get_real_stock(subject, start, end)
-        cursor_json = dumps(list(cursor), indent=4)
+        res_cursor = list(res_cursor)
+        cursor_json = dumps(res_cursor, indent=4)
         return range_dict, day_results, close_prices, close_dates, cursor_json
 
             

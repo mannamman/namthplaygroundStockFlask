@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, request, Response
+from flask import Blueprint, render_template, abort, request, Response, jsonify
 from my_module.date_module import DateModule
 from my_module.mongo_module import Mongo
 import json
@@ -29,6 +29,6 @@ def stock_day():
         day_statistics=json.dumps(day_results),
         close_prices=close_prices,
         close_dates=close_dates,
-        subejct=subject,
-        result=cursor_json,
+        subject=subject,
+        result=json.dumps(cursor_json),
     )
