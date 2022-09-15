@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# 서버 설정들
+configs/
+
 # env var
 .env
 

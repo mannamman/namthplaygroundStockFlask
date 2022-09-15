@@ -7,17 +7,7 @@ class YFin:
     def __init__(self) -> None:
         self.history_period = "1d"
         self.date_format = "%Y-%m-%d"
-        self.subejct_mapping = {
-            "google" : "GOOG",
-            "nasdaq" : "NDX",
-            "tesla" : "TSLA",
-            "snp500" : "^GSPC",
-            "americanelectricpower" : "AEP",
-            "oneok" : "OKE",
-            "amazon" : "AMZN",
-            "apple" : "AAPL"
-        }
-    
+
     def __new__(cls):
         if(not hasattr(cls, "instance")):
             cls.instance = super(YFin, cls).__new__(cls)
@@ -25,7 +15,7 @@ class YFin:
 
     def get_real_stock(
             self,
-            subejct: str,
+            stock_code: str,
             start: datetime.datetime,
             end: datetime.datetime
         ) -> Tuple[List[float], List[str]]:
@@ -36,9 +26,7 @@ class YFin:
         start = start.isoformat().split("T")[0]
         end = end.isoformat().split("T")[0]
 
-        stock = self.subejct_mapping[subejct]
-
-        stock_yf = yfinance.Ticker(stock)
+        stock_yf = yfinance.Ticker(stock_code)
 
         stock_history: pd.DataFrame = stock_yf.history(period=self.history_period, start=start, end=end)
     
@@ -52,7 +40,7 @@ if(__name__ == "__main__"):
     yfin = YFin()
     start = datetime.datetime(2022, 2, 28)
     end = datetime.datetime(2022, 3, 7)
-    subejct = "apple"
+    subejct = "APPL"
     p,d = yfin.get_real_stock(subejct, start, end)
     print(p,d)
     print(len(p))

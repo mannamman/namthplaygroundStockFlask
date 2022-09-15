@@ -23,17 +23,7 @@
         </div>
         <!-- <form action="https://www.namthplayground.com/stock/day" method="post">-->
         <form action="http://localhost:5958/stock/day" method="post">
-          <p>주제</p>
-          <select name="subject">
-            <option value="tesla">Tesla</option>
-            <option value="snp500">SNP500</option>
-            <option value="google">GOOGLE</option>
-            <option value="nasdaq">Nasdaq</option>
-            <option value="americanelectricpower">AmericanElectricPower</option>
-            <option value="oneok">Oneok</option>
-            <option value="amazon">Amazon</option>
-            <option value="apple">Apple</option>
-          </select><br>
+          <p id="stock_list"></p>
           <p>뉴스가 작성된 언어</p>
           <select name="source_lang">
             <option value="en">eng</option>
@@ -45,5 +35,28 @@
           </div>
           <input type="submit"/>
         </form>
+        <script>
+          const stock_list_raw = '{{stock_list}}';
+          const stock_list_str = stock_list_raw.replace(/&#34;/g,'"');
+          const stock_list = JSON.parse(stock_list_str)
+
+          const container = document.getElementById("stock_list")
+          const main_header = document.createElement('H2');
+          main_header.innerHTML = '주식 리스트';
+          container.appendChild(main_header);
+
+          const select_list = document.createElement("select");
+          select_list.setAttribute("name", "subject");
+
+          for (let stock of stock_list) {
+            const { stock_display, stock_code, stock_name } = stock;
+            const option = document.createElement("option");
+            option.innerHTML = stock_display;
+            // option.setAttribute("value", stock_name)
+            option.setAttribute("value", stock_name)
+            select_list.appendChild(option);
+          }
+          container.appendChild(select_list);
+        </script>
     </body>
 </html>
