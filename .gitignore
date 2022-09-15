@@ -6,6 +6,9 @@ __pycache__/
 # 서버 설정들
 configs/
 
+# venv
+stockenv/
+
 # env var
 .env
 
