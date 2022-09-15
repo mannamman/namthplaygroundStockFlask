@@ -21,7 +21,7 @@ DB client	mongo
 
 class Mongo:
     def __init__(self):
-        ip = os.getenv("MONGO_DEV_HOST")
+        ip = os.getenv("MONGO_HOST")
         port = os.getenv("MONGO_PORT")
         user = os.getenv("MONGO_USER")
         passwd = os.getenv("MONGO_PASSWD")
