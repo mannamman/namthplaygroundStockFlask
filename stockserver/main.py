@@ -7,7 +7,7 @@ from middleware.common import corsMiddleware
 
 app = Flask(__name__)
 
-# cors 미들웨어 등록, 모든요청에 대하여 실행하기에 wsgi에 등록함
+# cors 미들웨어 등록
 app.wsgi_app = corsMiddleware(app.wsgi_app)
 # blueprint 등록
 app.register_blueprint(stock_page, url_prefix="/stock")

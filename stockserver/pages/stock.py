@@ -46,15 +46,3 @@ def stock_daily():
         error = traceback.format_exc()
         logger.error_log(json.dumps(error))
         abort(400)
-
-
-@stock_page.route("/error", methods=["GET"])
-def for_error():
-    global logger
-    try:
-        a = 4/0
-        return Response(response="error", status=200)
-    except Exception:
-        error = traceback.format_exc()
-        logger.error_log(json.dumps(error))
-        abort(400)
