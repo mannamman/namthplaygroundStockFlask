@@ -1,7 +1,7 @@
-/home/ubuntu/logs/stockFlask/error.log
+/home/ubuntu/logs/stockFlask/stockFlaskOutput.log
 {
-    # 생성되는(rotate된 로그파일)의 소유권 설정
-    create 644 root root
+    # create 옵션 설정시 logrotate가 새로운 파일을 생성
+    # create 644 root root
     # 매일 실행
     daily
     # 최대 로그파일 개수
