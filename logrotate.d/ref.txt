@@ -1,0 +1,19 @@
+1. gunicorn 실행인자에 에러로그 경로 설정
+--error-logfile /logpath/error.log
+
+2.경로 아래에 파일(flask)을 생성(644 root root)
+/etc/logrotate.d/flask
+
+3. 설정파일 작성
+flask
+
+4. 데몬 업데이트
+sudo /usr/sbin/logrotate -f /etc/logrotate.conf
+
+5. cron 확인
+cat /var/lib/logrotate/status | grep error.log
+
+
+참고 자료
+logrotate: https://velog.io/@gillog/logrotate
+gunicorn signal: https://docs.gunicorn.org/en/stable/signals.html

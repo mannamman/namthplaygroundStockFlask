@@ -1,0 +1,25 @@
+/home/ubuntu/logs/stockFlask/error.log
+{
+    # 생성되는(rotate된 로그파일)의 소유권 설정
+    create 644 root root
+    # 매일 실행
+    daily
+    # 최대 로그파일 개수
+    rotate 7
+    # 로그파일이 없다면 에러 출력 후 종료
+    missingok
+    # 로그파일이 비어있다면 rotate하지 않음
+    notifempty
+    # rotate 로그 파일에 날짜표기
+    dateext
+    # 압축(gzip)
+    compress
+    # postrotate / endscript: 중간의 스크립트를 실행 후 실행
+    # flask 서버의 pid를 찾아내는 명령어와 해당 프로세스에게 USR1 시그널을 전달
+    # USR1을 받은 gunicorn은 로그파일을 다시 연다(Reopen the log files)
+    # 즉 새로운 로그파일을 다시 생성
+    postrotate
+        pid=$(systemctl show --property MainPID --value stockFlask.service)
+        kill -s USR1 ${pid}
+    endscript
+}
